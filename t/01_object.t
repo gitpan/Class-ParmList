@@ -4,12 +4,14 @@ use strict;
 use lib ('./blib','../lib','./lib');
 use Class::ParmList;
 
-my @do_tests=(1..3);
+my @do_tests=(1..5);
 
-my $test_subs = { 
-       1 => { -code => \&test1, -desc => 'legal    ' },
-       2 => { -code => \&test2, -desc => 'required ' },
-       3 => { -code => \&test3, -desc => 'defaults ' },
+my $test_subs = {
+       1 => { -code => \&test1, -desc => 'legal                ' },
+       2 => { -code => \&test2, -desc => 'required             ' },
+       3 => { -code => \&test3, -desc => 'defaults             ' },
+       4 => { -code => \&test4, -desc => 'stacked parms (hash) ' },
+       5 => { -code => \&test5, -desc => 'stacked parms (list) ' },
 };
 print $do_tests[0],'..',$do_tests[$#do_tests],"\n";
 print STDERR "\n";
@@ -25,11 +27,11 @@ foreach my $test (@do_tests) {
     if ($failure ne '') {
         chomp $failure;
         print "not ok $test\n";
-        print STDERR "    $desc - $failure\n";
+        print STDERR "     $desc                  - $failure\n";
         $n_failures++;
     } else {
         print "ok $test\n";
-        print STDERR "    $desc - ok\n";
+        print STDERR "     $desc                  - ok\n";
 
     }
 }
@@ -45,7 +47,7 @@ sub test1 {
         my $class = Class::ParmList->new({ -parms => $parms,
                                         -defaults => {},
                                         -required => [],
-                                           -legal => [qw(-test)], 
+                                           -legal => [qw(-test)],
                                          });
 		if (not defined $class) {
 			 die "failed to create new object and parse data";
@@ -61,7 +63,7 @@ sub test1 {
         $class = Class::ParmList->new({ -parms => $parms,
                                         -defaults => {},
                                         -required => [],
-                                           -legal => [-burp], 
+                                           -legal => [-burp],
                                          });
 		if (defined $class) {
 			 die "failed to flag undeclared parameter";
@@ -81,7 +83,7 @@ sub test2 {
         my $class = Class::ParmList->new({ -parms => $parms,
                                         -defaults => {},
                                         -required => [qw(-burp)],
-                                           -legal => [qw(-test)], 
+                                           -legal => [qw(-test)],
                                          });
 		if (defined $class) {
 			 die "failed to flag missing required parameter";
@@ -94,7 +96,7 @@ sub test2 {
         my $class = Class::ParmList->new({ -parms => $parms,
                                         -defaults => {},
                                         -required => [qw(-test)],
-                                           -legal => [qw(-burp)], 
+                                           -legal => [qw(-burp)],
                                          });
 		if (not defined $class) {
 			 die "failed to accept required parameter";
@@ -106,7 +108,7 @@ sub test2 {
     '';
 }
 ########################################
-# defaults                            #
+# defaults                             #
 ########################################
 sub test3 {
     my $parms = { -test => 'hello' };
@@ -114,14 +116,68 @@ sub test3 {
         my $class = Class::ParmList->new({ -parms => $parms,
                                         -defaults => {-heathen => 'yes', -test=> 'goodbye' },
                                         -required => [],
-                                           -legal => [qw(-test -heathen)], 
+                                           -legal => [qw(-test -heathen)],
                                          });
 		if (not defined $class) {
 			 die "failed to flag missing required parameter";
 		}
 		my ($test,$heathen) = $class->get(-test,-heathen);
 		if ($test ne 'hello') {
-			return "failed to overwrited default";
+			return "failed to overwrite default";
+		}
+		if ($heathen ne 'yes') {
+			return 'failed to set default';
+		}
+    };
+    if ($@) {
+        return $@;
+    }
+    '';
+}
+########################################
+# stacked parms hash                   #
+########################################
+sub test4 {
+    my $parms = [{ '-test' => 'hello' }];
+    eval {
+        my $class = Class::ParmList->new({ -parms => $parms,
+                                        -defaults => {-heathen => 'yes', -test=> 'goodbye' },
+                                        -required => [],
+                                           -legal => [qw(-test -heathen)],
+                                         });
+		if (not defined $class) {
+			 die "failed to flag missing required parameter";
+		}
+		my ($test,$heathen) = $class->get(-test,-heathen);
+		if ($test ne 'hello') {
+			return "failed to overwrite default";
+		}
+		if ($heathen ne 'yes') {
+			return 'failed to set default';
+		}
+    };
+    if ($@) {
+        return $@;
+    }
+    '';
+}
+########################################
+# stacked parms list                   #
+########################################
+sub test5 {
+    my $parms = [ '-test' => 'hello' ];
+    eval {
+        my $class = Class::ParmList->new({ -parms => $parms,
+                                        -defaults => {-heathen => 'yes', -test=> 'goodbye' },
+                                        -required => [],
+                                           -legal => [qw(-test -heathen)],
+                                         });
+		if (not defined $class) {
+			 die "failed to flag missing required parameter";
+		}
+		my ($test,$heathen) = $class->get(-test,-heathen);
+		if ($test ne 'hello') {
+			return "failed to overwrite default";
 		}
 		if ($heathen ne 'yes') {
 			return 'failed to set default';
