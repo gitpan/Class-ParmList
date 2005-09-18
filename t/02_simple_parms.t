@@ -48,12 +48,31 @@ exit;
 # malformed parameter lists            #
 ########################################
 sub test1 {
+
 	eval { my ($parm1,$parm2) = simple_parms('parm1','parm2','key1','value1'); };
 	if (not $@) { return 'Failed to detect simple malformed parameter list (no prototype list)' }
+
 	eval { my ($parm1,$parm2) = simple_parms(['parm1','parm2'],'key1'); };
 	if (not $@) { return 'Failed to detect hashed malformed parameter list (odd number of parms)' }
+
 	eval { my ($parm1,$parm2) = simple_parms(['parm1','parm2'],'key1','value2','key2'); };
 	if (not $@) { return 'Failed to detect hashed malformed parameter list (odd number of parms)' }
+
+	eval { my ($parm1,$parm2) = simple_parms(['parm1','parm2'],['key1','value2','key2']); };
+	if (not $@) { return 'Failed to detect hashed malformed parameter list (odd number of parms)' }
+
+	eval { my ($parm1,$parm2) = simple_parms(['parm1','parm2']); };
+	if (not $@) { return 'Failed to detect malformed parameter list (no parameters passed)' }
+
+	eval { my ($parm1,$parm2) = simple_parms([],{}); };
+	if (not $@) { return 'Failed to detect missing request parameters)' }
+
+	eval { my ($parm1,$parm2) = simple_parms(['key1','parm2'],'key1','value1','key2','value2'); };
+	if (not $@) { return 'Failed to detect illegal requested parameter)' }
+
+	eval { my $parm1 = simple_parms(['key1','key2'],'key1','value1','key2','value2'); };
+	if (not $@) { return 'Failed to flag scalar context for when requesting list)' }
+
     return '';
 }
 
@@ -97,6 +116,18 @@ sub test2 {
     if (($parm1 ne 'value1') || ($parm2 ne 'value2') || ($parm3 ne 'value3') || ($parm4 ne 'value4')) {
         return 'Failed to parse anon hash parameters correctly - returned values were incorrect when permuted';
     }
+
+    # Check for special case of requesting a single value in a scalar context
+	eval {
+        my $parm1 = simple_parms(['parm1'], { 'parm1' => 'value1' });
+    };
+	if ($@) {
+        return "Failed to handle single value requested in a scalar context: $@";
+    }
+    if ($parm1 ne 'value1') {
+        return "Failed to parse single value in scalar context correctly. Expected 'value1' got '$parm1'";
+    }
+
     return '';
 }
 

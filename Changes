@@ -9,3 +9,11 @@
  1.03 2000.12.06 - Added exportable class functions 'simple_parms'
                    and 'parse_parms' and allowed 'stacking' references
                    for parms to the object to improve calling usage.
+
+ 1.04 2005.09.18 - Added META.yml, Build.PL, Artistic_License.txt
+                   GPL_License.txt, LICENSE to distribution. Renamed
+                   CHANGES to Changes. Extended build tests to 100%
+                   coverage. Minor refactoring of module for speed.
+                   Seperated documentation into .pod file.
+                   Added POD/POD Coverage tests.
+

@@ -1,0 +1,12 @@
+---
+name: Class-ParmList
+version: 1.04
+author:
+  - Benjamin Franz <snowhare@nihongo.org>
+abstract: Methods for processing named parameter lists
+license: perl
+provides:
+  Class::ParmList:
+    file: lib/Class/ParmList.pm
+    version: 1.04
+generated_by: Module::Build version 0.261
