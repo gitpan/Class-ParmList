@@ -92,6 +92,12 @@ values for the named parameters if omitted.
                    Seperated documentation into .pod file.
                    Added POD/POD Coverage tests.
 
+ 1.05 2006.03.04 - Corrected mis-usage of Carp in error paths that
+                   was causing less than useful error messages.
+
+                   Added LICENSE and DISCLAIMER sections to
+                   documentation.
+
 =head1 METHODS
 
 =over 4
@@ -135,9 +141,9 @@ Example:
 
  sub example_sub {
    my $parms = Class::ParmList->new({ -parms => \@_,
-                                     -legal => [],
-                                  -required => ['-file','-data'],
-                                  -defaults => {},
+                                      -legal => [],
+                                   -required => ['-file','-data'],
+                                   -defaults => {},
                                   });
 
    #...
@@ -180,7 +186,7 @@ Example:
 
 =over 4
 
-=item get($parm_name1,$parm_name2,...);
+=item get($parm_name1, $parm_name2,...);
 
 Returns the parameter value(s) specified in the call line. If
 a parameter is not defined, it returns undef. If a set of
@@ -303,20 +309,53 @@ mis-usages and is reasonably fast.
 
 =head1 VERSION
 
-1.04 2005.09.18
+1.05 2006.03.04
 
 =head1 COPYRIGHT
 
-Copyright 1999-2005 Benjamin Franz (<URL:http://www.nihongo.org/snowhare/>) and
+Copyright Benjamin Franz (<URL:http://www.nihongo.org/snowhare/>) and
 FreeRun Technologies, Inc. (<URL:http://www.freeruntech.com/>). All Rights Reserved.
-This software may be copied or redistributed under the same terms as Perl itelf.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it
+and/or modify it under the same terms and conditions as
+Perl itself.
+
+This means that you can, at your option, redistribute it and/or modify it under
+either the terms the GNU Public License (GPL) version 1 or later, or under the
+Perl Artistic License.
+
+See http://dev.perl.org/licenses/
+
+=head1 DISCLAIMER
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS
+OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE.
+
+Use of this software in any way or in any form, source or binary,
+is not allowed in any country which prohibits disclaimers of any
+implied warranties of merchantability or fitness for a particular
+purpose or any disclaimers of a similar nature.
+
+IN NO EVENT SHALL I BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT,
+SPECIAL, INCIDENTAL,  OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OF THIS SOFTWARE AND ITS DOCUMENTATION (INCLUDING, BUT NOT
+LIMITED TO, LOST PROFITS) EVEN IF I HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE
 
 =head1 AUTHOR
 
-Benjamin Franz
+Benjamin Franz, <snowhare@nihongo.org>
+
+=head1 BUGS
+
+None known
 
 =head1 TODO
 
-Everything.
+Memoization of parameter validation for performance.
 
 =cut

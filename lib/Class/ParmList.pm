@@ -4,7 +4,7 @@ use strict;
 require Exporter;
 
 BEGIN {
-	$Class::ParmList::VERSION     = '1.04';
+	$Class::ParmList::VERSION     = '1.05';
 	@Class::ParmList::ISA         = qw (Exporter);
 	@Class::ParmList::EXPORT      = ();
 	@Class::ParmList::EXPORT_OK   = qw (simple_parms parse_parms);
@@ -159,13 +159,15 @@ sub get {
 
 	my @parmnames = @_;
 	if ($#parmnames == -1) {
-		croak(__PACKAGE__ . '::get() called without any parameters');
+        require Carp;
+		Carp::croak(__PACKAGE__ . '::get() called without any parameters');
 	}
 	my (@results) = ();
 	my $parmname;
 	foreach $parmname (@parmnames) {
 		my $keyname = lc ($parmname);
-		croak (__PACKAGE__ . "::get() called with an illegal named parameter: '$keyname'") if (exists ($self->{-legal}) and not exists ($self->{-legal}->{$keyname}));	
+        require Carp;
+		Carp::croak (__PACKAGE__ . "::get() called with an illegal named parameter: '$keyname'") if (exists ($self->{-legal}) and not exists ($self->{-legal}->{$keyname}));	
 		push (@results,$self->{-parms}->{$keyname});
 	}
 	if (wantarray) {
@@ -219,11 +221,13 @@ sub simple_parms {
 	local $SIG{__DIE__} = ''; # Because SOME PEOPLE cause trouble
 	my $parm_list = shift;
 	unless (ref($parm_list) eq 'ARRAY') {
-		confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - The first parameter to 'simple_parms()' must be an anonymous list of parameter names.");
+        require Carp;
+		Carp::confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - The first parameter to 'simple_parms()' must be an anonymous list of parameter names.");
 	}
 
 	if (($#_ > 0) && (($#_ + 1) % 2)) {
-		confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - Odd number of parameter array elements");
+        require Carp;
+		Carp::confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - Odd number of parameter array elements");
 	}
 
 	# Read any other passed parms
@@ -239,7 +243,7 @@ sub simple_parms {
 
 	unless (ref ($parm_ref) eq 'HASH') {
 		require Carp;
-		confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - A bad parameter list was passed (not either an anon hash or an array)");
+		Carp::confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - A bad parameter list was passed (not either an anon hash or an array)");
 	}
 
 	my @parm_keys = keys %$parm_ref;
@@ -263,7 +267,7 @@ sub simple_parms {
 	}
 	if ($errors ne '') {
 		require Carp;
-		confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - $errors");
+		Carp::confess ('[' . localtime(time) . '] [error] ' . __PACKAGE__ . "::simple_parms() - $errors");
 	}
 	if (wantarray) {
 		return @parsed_parms;

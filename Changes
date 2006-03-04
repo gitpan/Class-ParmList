@@ -17,3 +17,9 @@
                    Seperated documentation into .pod file.
                    Added POD/POD Coverage tests.
 
+ 1.05 2006.03.04 - Corrected mis-usage of Carp in error paths that
+                   was causing less than useful error messages.
+
+                   Added LICENSE and DISCLAIMER sections to
+                   documentation.
+
